@@ -22,6 +22,18 @@ def load_defaults():
 # chama no startup (não depende mais de decorator removido)
 load_defaults()
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        'message': 'API Calculadora Tributária - Backend',
+        'status': 'online',
+        'endpoints': {
+            '/tables/status': 'GET - Status das tabelas fiscais',
+            '/upload_tables': 'POST - Upload de tabelas customizadas',
+            '/compare': 'POST - Comparar cenários tributários'
+        }
+    })
+
 @app.route('/tables/status', methods=['GET'])
 def tables_status():
     return jsonify(store.status())
