@@ -23,11 +23,13 @@ function CompareForm() {
   const [inputs, setInputs] = useState({
     monthly_revenue: '50.000',
     annual_revenue: '600.000',
+    monthly_payroll: '15.000',
     annual_payroll: '180.000',
     pro_labore_monthly_a: '0',
     pro_labore_monthly_b: '16.000',
     iss_rate_percent: '2,00',
     inss_patronal_percent: '20,00',
+    honorarios_contabeis: '1.500',
     atividade: 'servicos',
   });
   
@@ -43,11 +45,68 @@ function CompareForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInputs((prev) => ({ ...prev, [name]: value }));
+    let newInputs = { ...inputs, [name]: value };
+    
+    // Auto-preencher receita anual quando receita mensal mudar
+    if (name === 'monthly_revenue') {
+      const monthly = parseBrNumber(value);
+      newInputs.annual_revenue = formatBr(monthly * 12);
+      
+      // Recalcular pró-labore B para atingir 28% de Fator R
+      const monthlyPayroll = parseBrNumber(inputs.monthly_payroll);
+      const annualRevenue = monthly * 12;
+      const targetPayroll = annualRevenue * 0.28; // 28% da receita anual
+      const annualPayrollFromEmployees = monthlyPayroll * 12;
+      const neededProLabore = Math.max(0, (targetPayroll - annualPayrollFromEmployees) / 12);
+      newInputs.pro_labore_monthly_b = formatBr(neededProLabore);
+    }
+    
+    // Auto-preencher folha anual quando folha mensal mudar
+    if (name === 'monthly_payroll') {
+      const monthly = parseBrNumber(value);
+      newInputs.annual_payroll = formatBr(monthly * 12);
+      
+      // Recalcular pró-labore B para atingir 28% de Fator R
+      const monthlyRevenue = parseBrNumber(inputs.monthly_revenue);
+      const annualRevenue = monthlyRevenue * 12;
+      const targetPayroll = annualRevenue * 0.28;
+      const annualPayrollFromEmployees = monthly * 12;
+      const neededProLabore = Math.max(0, (targetPayroll - annualPayrollFromEmployees) / 12);
+      newInputs.pro_labore_monthly_b = formatBr(neededProLabore);
+    }
+    
+    setInputs(newInputs);
   };
 
   const handleNumberBlur = (name) => () => {
-    setInputs((prev) => ({ ...prev, [name]: formatBr(prev[name]) }));
+    let newInputs = { ...inputs, [name]: formatBr(inputs[name]) };
+    
+    // Recalcular dependências no blur também
+    if (name === 'monthly_revenue') {
+      const monthly = parseBrNumber(inputs.monthly_revenue);
+      newInputs.annual_revenue = formatBr(monthly * 12);
+      
+      const monthlyPayroll = parseBrNumber(inputs.monthly_payroll);
+      const annualRevenue = monthly * 12;
+      const targetPayroll = annualRevenue * 0.28;
+      const annualPayrollFromEmployees = monthlyPayroll * 12;
+      const neededProLabore = Math.max(0, (targetPayroll - annualPayrollFromEmployees) / 12);
+      newInputs.pro_labore_monthly_b = formatBr(neededProLabore);
+    }
+    
+    if (name === 'monthly_payroll') {
+      const monthly = parseBrNumber(inputs.monthly_payroll);
+      newInputs.annual_payroll = formatBr(monthly * 12);
+      
+      const monthlyRevenue = parseBrNumber(inputs.monthly_revenue);
+      const annualRevenue = monthlyRevenue * 12;
+      const targetPayroll = annualRevenue * 0.28;
+      const annualPayrollFromEmployees = monthly * 12;
+      const neededProLabore = Math.max(0, (targetPayroll - annualPayrollFromEmployees) / 12);
+      newInputs.pro_labore_monthly_b = formatBr(neededProLabore);
+    }
+    
+    setInputs(newInputs);
   };
 
   const handleSubmit = async (e) => {
@@ -175,6 +234,19 @@ function CompareForm() {
                   </div>
                 </div>
               )}
+              
+              {/* Total com Honorários */}
+              {typeof parseBrNumber(inputs.honorarios_contabeis) === 'number' && (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #90caf9' }}>
+                  <div style={{ fontWeight: 'bold', color: '#0d47a1' }}>Custo Total (DAS + IRRF + INSS + Honorários):</div>
+                  <div style={{ fontSize: '1.1em', color: '#01579b' }}>
+                    R$ {((r.simples_scenarios.with_factor_r.total_monthly_including_prolabore || r.simples_scenarios.with_factor_r.tax_monthly) + parseBrNumber(inputs.honorarios_contabeis)).toLocaleString('pt-BR')} mensal
+                  </div>
+                  <div>
+                    R$ {(((r.simples_scenarios.with_factor_r.total_annual_including_prolabore || r.simples_scenarios.with_factor_r.tax_annual) + parseBrNumber(inputs.honorarios_contabeis) * 12)).toLocaleString('pt-BR')} anual
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Sem Fator R */}
@@ -186,6 +258,19 @@ function CompareForm() {
               <div><strong>Imposto anual:</strong> R$ {r.simples_scenarios.without_factor_r.tax_annual.toLocaleString('pt-BR')}</div>
               {r.inputs?.annual_revenue > 0 && (
                 <div><strong>Alíquota efetiva:</strong> {((r.simples_scenarios.without_factor_r.tax_annual / r.inputs.annual_revenue) * 100).toFixed(2)}%</div>
+              )}
+              
+              {/* Total com Honorários */}
+              {typeof parseBrNumber(inputs.honorarios_contabeis) === 'number' && (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bdbdbd' }}>
+                  <div style={{ fontWeight: 'bold', color: '#424242' }}>Custo Total (DAS + Honorários):</div>
+                  <div style={{ fontSize: '1.1em', color: '#212121' }}>
+                    R$ {(r.simples_scenarios.without_factor_r.tax_monthly + parseBrNumber(inputs.honorarios_contabeis)).toLocaleString('pt-BR')} mensal
+                  </div>
+                  <div>
+                    R$ {((r.simples_scenarios.without_factor_r.tax_annual + parseBrNumber(inputs.honorarios_contabeis) * 12)).toLocaleString('pt-BR')} anual
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -350,6 +435,20 @@ function CompareForm() {
               value={inputs.annual_revenue}
               onChange={handleChange}
               onBlur={handleNumberBlur('annual_revenue')}
+              style={{ width: '100%', padding: 8, marginTop: 4, backgroundColor: '#f0f0f0' }}
+              readOnly
+              title="Calculado automaticamente: Receita mensal × 12"
+            />
+            <span style={{ fontSize: 11, color: '#666' }}>Auto-calculado (mensal × 12)</span>
+          </label>
+          <label>
+            <strong>Folha mensal (empregados):</strong>
+            <input
+              type="text"
+              name="monthly_payroll"
+              value={inputs.monthly_payroll}
+              onChange={handleChange}
+              onBlur={handleNumberBlur('monthly_payroll')}
               style={{ width: '100%', padding: 8, marginTop: 4 }}
             />
           </label>
@@ -361,6 +460,20 @@ function CompareForm() {
               value={inputs.annual_payroll}
               onChange={handleChange}
               onBlur={handleNumberBlur('annual_payroll')}
+              style={{ width: '100%', padding: 8, marginTop: 4, backgroundColor: '#f0f0f0' }}
+              readOnly
+              title="Calculado automaticamente: Folha mensal × 12"
+            />
+            <span style={{ fontSize: 11, color: '#666' }}>Auto-calculado (mensal × 12)</span>
+          </label>
+          <label>
+            <strong>Honorários Contábeis (mensal):</strong>
+            <input
+              type="text"
+              name="honorarios_contabeis"
+              value={inputs.honorarios_contabeis}
+              onChange={handleChange}
+              onBlur={handleNumberBlur('honorarios_contabeis')}
               style={{ width: '100%', padding: 8, marginTop: 4 }}
             />
           </label>
@@ -388,8 +501,11 @@ function CompareForm() {
                 value={inputs.pro_labore_monthly_b}
                 onChange={handleChange}
                 onBlur={handleNumberBlur('pro_labore_monthly_b')}
-                style={{ width: '100%', padding: 8, marginTop: 4 }}
+                style={{ width: '100%', padding: 8, marginTop: 4, backgroundColor: '#fffacd' }}
+                readOnly
+                title="Calculado automaticamente para atingir 28% de Fator R"
               />
+              <span style={{ fontSize: 11, color: '#666' }}>Auto-calculado para Fator R ≥ 28%</span>
             </label>
           </div>
         </fieldset>
