@@ -114,7 +114,7 @@ function CompareForm() {
     setLoading(true);
     setError('');
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://192.168.1.142:5000';
+      const API_URL = process.env.REACT_APP_API_URL || 'https://calculadora-tributaria-backend-a73a940e7cbe.herokuapp.com';
       const base = {
         monthly_revenue: parseBrNumber(inputs.monthly_revenue),
         annual_revenue: parseBrNumber(inputs.annual_revenue),
