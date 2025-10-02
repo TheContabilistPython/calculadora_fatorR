@@ -7,7 +7,13 @@ app = Flask(__name__)
 store = TablesStore()
 
 from flask_cors import CORS
-CORS(app)
+CORS(app, resources={
+    r"/*": {
+        "origins": ["https://calculo-tributario-frontend.onrender.com", "http://localhost:3000"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 
 # Carregar tabelas de exemplo no startup
