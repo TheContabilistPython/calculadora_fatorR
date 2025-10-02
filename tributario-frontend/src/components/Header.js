@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = () => {
+const Header = ({ onLogout }) => {
   return (
     <header className="brand-header">
       <div className="brand-container">
@@ -17,19 +17,26 @@ const Header = () => {
           </div>
         </div>
         <div className="brand-right">
-          <button 
-            className="brand-link" 
-            onClick={(e)=>e.preventDefault()}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              cursor: 'pointer',
-              color: 'inherit',
-              font: 'inherit'
-            }}
-          >
-            Contato
-          </button>
+          {onLogout && (
+            <button 
+              className="brand-link logout-button" 
+              onClick={onLogout}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer',
+                color: 'inherit',
+                font: 'inherit',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                transition: 'background-color 0.3s'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+              onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+            >
+              Sair
+            </button>
+          )}
         </div>
       </div>
     </header>
