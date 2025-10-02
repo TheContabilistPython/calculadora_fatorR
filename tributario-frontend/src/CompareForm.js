@@ -141,9 +141,9 @@ function CompareForm() {
               {/* Com pró-labore */}
               {typeof r.simples_scenarios.with_factor_r.total_monthly_including_prolabore === 'number' && (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #90caf9' }}>
-                  <div style={{ fontWeight: 'bold' }}>Total mensal (inclui IRRF+INSS do pró-labore):</div>
+                  <div style={{ fontWeight: 'bold' }}>Total mensal (DAS + IRRF + INSS):</div>
                   <div style={{ fontSize: '1.1em', color: '#0d47a1' }}>R$ {r.simples_scenarios.with_factor_r.total_monthly_including_prolabore.toLocaleString('pt-BR')}</div>
-                  <div style={{ fontWeight: 'bold', marginTop: 4 }}>Total anual (inclui IRRF+INSS do pró-labore):</div>
+                  <div style={{ fontWeight: 'bold', marginTop: 4 }}>Total anual (DAS + IRRF + INSS):</div>
                   <div>R$ {r.simples_scenarios.with_factor_r.total_annual_including_prolabore.toLocaleString('pt-BR')}</div>
                   
                   {/* Detalhes do pró-labore */}
@@ -262,11 +262,11 @@ function CompareForm() {
               {/* Com pró-labore */}
               {typeof r.prolabore?.inss === 'number' && typeof r.prolabore?.irrf === 'number' && (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: '2px solid #fbc02d' }}>
-                  <div style={{ fontWeight: 'bold' }}>Total mensal (inclui IRRF+INSS do pró-labore):</div>
+                  <div style={{ fontWeight: 'bold' }}>Total mensal (Tributos + IRRF + INSS):</div>
                   <div style={{ fontSize: '1.1em', color: '#e65100' }}>
                     R$ {(r.presumido.total_monthly_with_patronal + (r.prolabore.inss + r.prolabore.irrf)).toLocaleString('pt-BR')}
                   </div>
-                  <div style={{ fontWeight: 'bold', marginTop: 4 }}>Total anual (inclui IRRF+INSS do pró-labore):</div>
+                  <div style={{ fontWeight: 'bold', marginTop: 4 }}>Total anual (Tributos + IRRF + INSS):</div>
                   <div>
                     R$ {(r.presumido.total_annual_with_patronal + (r.prolabore.inss + r.prolabore.irrf) * 12).toLocaleString('pt-BR')}
                   </div>
