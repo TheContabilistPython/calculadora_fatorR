@@ -17,7 +17,19 @@ const Header = () => {
           </div>
         </div>
         <div className="brand-right">
-          <a className="brand-link" href="#" onClick={(e)=>e.preventDefault()}>Contato</a>
+          <button 
+            className="brand-link" 
+            onClick={(e)=>e.preventDefault()}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              cursor: 'pointer',
+              color: 'inherit',
+              font: 'inherit'
+            }}
+          >
+            Contato
+          </button>
         </div>
       </div>
     </header>
