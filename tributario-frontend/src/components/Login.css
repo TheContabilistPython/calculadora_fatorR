@@ -34,9 +34,10 @@
 }
 
 .login-logo {
-  height: 80px;
+  height: 120px;
   width: auto;
   margin-bottom: 20px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 .login-header h2 {
