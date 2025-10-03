@@ -12,12 +12,9 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo_pronta.png" />
     
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=%REACT_APP_GA_MEASUREMENT_ID%"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '%REACT_APP_GA_MEASUREMENT_ID%');
+      // Injeta o ID do Google Analytics via variável de ambiente
+      window.GA_MEASUREMENT_ID = '%REACT_APP_GA_MEASUREMENT_ID%';
     </script>
     
     <!--

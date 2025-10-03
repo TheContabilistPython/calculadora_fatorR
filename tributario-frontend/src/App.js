@@ -3,6 +3,7 @@ import './App.css';
 import CompareForm from './CompareForm';
 import Header from './components/Header';
 import Login from './components/Login';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,12 +27,18 @@ function App() {
 
   // Se não estiver autenticado, mostra tela de login
   if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
+    return (
+      <>
+        <GoogleAnalytics />
+        <Login onLoginSuccess={handleLoginSuccess} />
+      </>
+    );
   }
 
   // Se estiver autenticado, mostra o app
   return (
     <div className="app-root">
+      <GoogleAnalytics />
       <Header onLogout={handleLogout} />
       <CompareForm />
     </div>
